@@ -1,10 +1,12 @@
 all: main clean
-main: puzzle.o main.o 
-	gcc -o main puzzle.o main.o
-puzzle.o: puzzle.c
-	gcc -o puzzle.o -c puzzle.c -W -Wall -ansi -pedantic
-main.o: main.c puzzle.h
-	gcc -o main.o -c main.c -W -Wall -ansi -pedantic
+main: puzzle.o graph.o main.o 
+	g++ -o main puzzle.o main.o -std=c++11
+puzzle.o: puzzle.cpp
+	g++ -o puzzle.o -c puzzle.cpp -W -Wall -ansi -pedantic -std=c++11
+graph.o: graph.cpp
+	g++ -o graph.o -c graph.cpp -W -Wall -ansi -pedantic -std=c++11
+main.o: main.cpp puzzle.hpp
+	g++ -o main.o -c main.cpp -W -Wall -ansi -pedantic -std=c++11
 clean:
 	rm -rf *.o
 mrproper: clean

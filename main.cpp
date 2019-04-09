@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "puzzle.hpp"
+#include "graph.hpp"
 
 int main(int argc, char* argv[]){
     char* algorithmType;
     int puzzleSize = -1, numOfInstances = -1, i, j;
-    int *initialState;
 
     if(argc > 2){
         algorithmType = argv[1];
@@ -24,15 +24,13 @@ int main(int argc, char* argv[]){
         printf("Use: ./main -<algType> <instance>\n");
         return 0;
     }
-    printf("Esse é um %d-Puzzle!\n", puzzleSize - 1);
-    printf("Argc: %d\n", argc);
+    std::cout << "Esse é um " << puzzleSize - 1 << "-Puzzle!" << std::endl;
+    //std::cout << argc << std::endl;
 
-    initialState = (int*) malloc(puzzleSize*sizeof(int));
-    for(i = 0; i < numOfInstances; i++){
+    unsigned long long initialState = 0;
+    for(int i = 0; i < numOfInstances; i++){
         initialState = fill_initial_state(initialState, argv, puzzleSize, i);
-        for(j = 0; j < puzzleSize; j++){
-            printf("%d ", initialState[j]);
-        }
+        printf("%llx\n",initialState);
     }
 
     return 0;
