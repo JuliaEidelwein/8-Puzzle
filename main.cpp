@@ -33,5 +33,12 @@ int main(int argc, char* argv[]){
         printf("%llx\n",initialState);
     }
 
+    for(int i = 0; i < puzzleSize; i++){
+        generate_successors(initialState, i, UP);
+        generate_successors(initialState, i, DOWN);
+        generate_successors(initialState, i, LEFT);
+        generate_successors(initialState, i, RIGHT);
+    }
+
     return 0;
 }

@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <iostream>
 #include "puzzle.hpp"
 
 unsigned long long fill_initial_state(unsigned long long initialState, char* argv[], int puzzleSize, int instance){
@@ -32,10 +33,32 @@ unsigned long long generate_successors(unsigned long long state, int zeroPositio
     unsigned long long newState;
     switch(direction){
         case UP:
-
+            if(zeroPosition < 6){ //not in position 8, 7 or 6
+                std::cout << zeroPosition << "Able to move up" << std::endl;
+            } else {
+                std::cout << zeroPosition << "UNABLE to move up" << std::endl;
+            }
+            break;
         case DOWN:
-        case LEFT:
+            if(zeroPosition > 2){ //not in position 2, 1 or 0
+                std::cout << zeroPosition << "Able to move down" << std::endl;
+            } else {
+                std::cout << zeroPosition << "UNABLE to move down" << std::endl;
+            }
+            break;
         case RIGHT:
+            if((zeroPosition % 3) != 0){ //not in position 6, 3 or 0
+                std::cout << zeroPosition << "Able to move right" << std::endl;
+            } else {
+                std::cout << zeroPosition << "UNABLE to move right" << std::endl;
+            }
+            break;
+        case LEFT:
+            if(((zeroPosition - 2) % 3) != 0){ //not in position 8, 5, or 2
+                std::cout << zeroPosition << "Able to move left" << std::endl;
+            } else {
+                std::cout << zeroPosition << "UNABLE to move left" << std::endl;
+            }
             break;
     }
 }
