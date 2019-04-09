@@ -2,11 +2,15 @@
 #include <stdlib.h>
 #include "puzzle.hpp"
 
-int * fill_initial_state(int initialState[], char* argv[], int puzzleSize, int instance){
+unsigned long long fill_initial_state(unsigned long long initialState, char* argv[], int puzzleSize, int instance){
     int startPosition = (2 + instance*puzzleSize), endPosition = (2 + (1+instance)*puzzleSize);
     int i, j;
     for(i = startPosition, j = 0; i < endPosition; i++, j++){
-        initialState[j] = atoi(argv[i]);
+        //initialState[j] = atoi(argv[i]);
+        initialState = initialState | atoi(argv[i]);
+        printf("ATOI %llx\n",initialState);
+        initialState = initialState << 4;
+        printf("SHIFT %llx\n",initialState);
     }
     return initialState;
 }

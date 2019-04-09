@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include "puzzle.hpp"
+#include "graph.hpp"
 
 int main(int argc, char* argv[]){
     char* algorithmType;
@@ -23,15 +24,12 @@ int main(int argc, char* argv[]){
         return 0;
     }
     std::cout << "Esse é um " << puzzleSize - 1 << "-Puzzle!" << std::endl;
-    std::cout << argc << std::endl;
+    //std::cout << argc << std::endl;
 
-    int *initialState;
-    initialState = (int*) malloc(puzzleSize*sizeof(int));
+    unsigned long long initialState = 0;
     for(int i = 0; i < numOfInstances; i++){
         initialState = fill_initial_state(initialState, argv, puzzleSize, i);
-        for(int i = 0; i < puzzleSize; i++){
-            std::cout << initialState[i];
-        }
+        printf("%llx\n",initialState);
     }
 
     return 0;
