@@ -4,9 +4,11 @@
 
 
 class State{
+    std::vector<State*> successors;
+
+    public:
     unsigned long long value;
     int zeroPosition;
-    std::vector<State*> successors;
 };
 
 

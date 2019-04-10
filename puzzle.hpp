@@ -1,5 +1,5 @@
-enum moves{UP, DOWN, LEFT, RIGHT};
+#include "graph.hpp"
 
-unsigned long long fill_initial_state(unsigned long long initialState, char* argv[], int puzzleSize, int instance);
+State fill_initial_state(unsigned long long initialState, char* argv[], int puzzleSize, int instance);
 
-unsigned long long generate_successors(unsigned long long state, int zeroPosition, int direction, int puzzleSize);
+std::vector<State*> generate_successors(State state, int puzzleSize);

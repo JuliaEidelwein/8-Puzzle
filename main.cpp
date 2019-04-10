@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "puzzle.hpp"
-#include "graph.hpp"
 
 int main(int argc, char* argv[]){
     char* algorithmType;
@@ -28,15 +27,13 @@ int main(int argc, char* argv[]){
     //std::cout << argc << std::endl;
 
     unsigned long long initialState = 0;
+    State state;
     for(int i = 0; i < numOfInstances; i++){
-        initialState = fill_initial_state(initialState, argv, puzzleSize, i);
-        printf("%llx\n",initialState);
+        state = fill_initial_state(initialState, argv, puzzleSize, i);
+        printf("%llx\n",state.value);
     }
 
-    generate_successors(initialState, 5, UP, puzzleSize);
-    generate_successors(initialState, 5, DOWN, puzzleSize);
-    generate_successors(initialState, 5, LEFT, puzzleSize);
-    generate_successors(initialState, 5, RIGHT, puzzleSize);
+    generate_successors(state, puzzleSize);
 
     return 0;
 }
