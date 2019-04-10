@@ -11,7 +11,7 @@ int main(int argc, char* argv[]){
         algorithmType = argv[1];
         for(i = 2; i < argc; i++){
             printf("%s\n", argv[i]);
-            if(argv[i][1]){
+            if(argv[i][1] && argv[i][1] == ','){
                 puzzleSize = i - 1;
             }
         }
@@ -33,10 +33,10 @@ int main(int argc, char* argv[]){
         printf("%llx\n",initialState);
     }
 
-    generate_successors(initialState, 4, UP);
-    generate_successors(initialState, 4, DOWN);
-    generate_successors(initialState, 4, LEFT);
-    generate_successors(initialState, 4, RIGHT);
+    generate_successors(initialState, 5, UP, puzzleSize);
+    generate_successors(initialState, 5, DOWN, puzzleSize);
+    generate_successors(initialState, 5, LEFT, puzzleSize);
+    generate_successors(initialState, 5, RIGHT, puzzleSize);
 
     return 0;
 }
