@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "puzzle.hpp"
+#include "algorithms.hpp"
 
 int main(int argc, char* argv[]){
     char* algorithmType;
@@ -29,7 +29,8 @@ int main(int argc, char* argv[]){
         state = fill_initial_state(initialState, argv, puzzleSize, i);
     }
 
-    state.successors = state.generate_successors(state, puzzleSize);
+    state.successors = state.generate_successors();
+    std::cout << BFS_Graph(state);
 
     return 0;
 }
