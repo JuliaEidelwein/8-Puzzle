@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "algorithms.hpp"
 
 int main(int argc, char* argv[]){
@@ -26,12 +27,27 @@ int main(int argc, char* argv[]){
 
     unsigned long long initialState = 0;
     State state;
-    for(int i = 0; i < numOfInstances; i++){
-        state = fill_initial_state(initialState, argv, puzzleSize, i);
-        state.successors = state.generate_successors();
-        //printf("Instance %d: %llx\n", numOfInstances, state.value);
-        std::cout << BFS_Graph(state) << std::endl;
-        std::cout << IterativeDeepening_DFS(state) << std::endl;
+    if(strcmp(algorithmType,"-bfs") == 0){
+        for(int i = 0; i < numOfInstances; i++){
+            state = fill_initial_state(initialState, argv, puzzleSize, i);
+            state.successors = state.generate_successors();
+            //printf("Instance %d: %llx\n", numOfInstances, state.value);
+            std::cout << BFS_Graph(state) << std::endl;
+        }
+    } else if(strcmp(algorithmType,"-idfs") == 0) {
+       for(int i = 0; i < numOfInstances; i++){
+            state = fill_initial_state(initialState, argv, puzzleSize, i);
+            state.successors = state.generate_successors();
+            std::cout << IterativeDeepening_DFS(state) << std::endl;
+        }
+    } else if(strcmp(algorithmType,"-astar") == 0) {
+        std::cout << "A* not implemented yet" << std::endl;
+    } else if(strcmp(algorithmType,"-idastar") == 0) {
+        std::cout << "IDA* not implemented yet" << std::endl;
+    } else if(strcmp(algorithmType,"-gbfs") == 0) {
+        std::cout << "Greedy Best-First Search not implemented yet" << std::endl;
+    } else {
+        std::cout << "Invalid algorithm!" << std::endl;
     }
 
     //state.successors = state.generate_successors();
