@@ -30,7 +30,7 @@ int main(int argc, char* argv[]){
     }
 
     state.successors = state.generate_successors();
-    std::cout << BFS_Graph(state);
+    std::cout << BFS_Graph(state) << std::endl;
 
     return 0;
 }

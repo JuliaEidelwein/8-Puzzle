@@ -2,4 +2,4 @@
 #include <set>
 #include "puzzle.hpp"
 
-int BFS_Graph(State initialState);
+Output BFS_Graph(State initialState);

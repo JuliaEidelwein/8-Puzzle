@@ -16,10 +16,12 @@ class State{
     public:
     unsigned long long value;
     int zeroPosition;
+    int heuristicValue;
     std::vector<State*> successors;
 
     std::vector<State*> generate_successors();
     bool isGoal();
+    int heuristicFunction();
 };
 
 
@@ -33,14 +35,20 @@ class Node{
 };
 
 class Output{
-    unsigned long long expandedNodes;
-    int optimalSolutionSize;
+    public:
+    unsigned long long expandedNodes = 0;
+    int optimalSolutionSize = 0;
     time_t time;
-    float averageHeuristicValue;
+    float averageHeuristicValue = 0;
     int heuristicInitialState;
 };
 
 
 State fill_initial_state(unsigned long long initialState, char* argv[], int puzzleSize, int instance);
+std::ostream& operator<<(std::ostream& os, Output output);
+
+int getGoalTilePosition(unsigned long long tile);
+int getRow(int position);
+int getColumn(int position);
 
 
