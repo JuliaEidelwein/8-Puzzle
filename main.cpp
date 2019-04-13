@@ -27,10 +27,12 @@ int main(int argc, char* argv[]){
     State state;
     for(int i = 0; i < numOfInstances; i++){
         state = fill_initial_state(initialState, argv, puzzleSize, i);
+        state.successors = state.generate_successors();
+        std::cout << BFS_Graph(state) << std::endl;
     }
 
-    state.successors = state.generate_successors();
-    std::cout << BFS_Graph(state) << std::endl;
+    //state.successors = state.generate_successors();
+    //std::cout << BFS_Graph(state) << std::endl;
 
     return 0;
 }
