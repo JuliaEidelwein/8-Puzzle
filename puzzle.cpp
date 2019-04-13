@@ -268,8 +268,12 @@ Node::Node(State state, int cost){
 }
 
 std::ostream& operator<<(std::ostream& os, Output output){
-    os << std::fixed << "expandidos: " << output.expandedNodes << ',' << "solucao: " << output.optimalSolutionSize << ','
-        << "tempo: "<< (double)output.time/CLOCKS_PER_SEC << ',' << "mediaHeur: " << output.averageHeuristicValue << ','<< "inicialHeur: "
-         << output.heuristicInitialState;
+    if(output.optimalSolutionSize != -1){
+        os << std::fixed << "expandidos: " << output.expandedNodes << ',' << "solucao: " << output.optimalSolutionSize << ','
+            << "tempo: "<< (double)output.time/CLOCKS_PER_SEC << ',' << "mediaHeur: " << output.averageHeuristicValue << ','<< "inicialHeur: "
+            << output.heuristicInitialState;
+    } else {
+        os << "-,-,-,-,-";
+    }
     return os;
 }

@@ -41,7 +41,11 @@ int main(int argc, char* argv[]){
             std::cout << IterativeDeepening_DFS(state) << std::endl;
         }
     } else if(strcmp(algorithmType,"-astar") == 0) {
-        std::cout << "A* not implemented yet" << std::endl;
+       for(int i = 0; i < numOfInstances; i++){
+            state = fill_initial_state(initialState, argv, puzzleSize, i);
+            state.successors = state.generate_successors();
+            std::cout << Astar(state) << std::endl;
+        }
     } else if(strcmp(algorithmType,"-idastar") == 0) {
         std::cout << "IDA* not implemented yet" << std::endl;
     } else if(strcmp(algorithmType,"-gbfs") == 0) {
