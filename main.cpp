@@ -31,6 +31,7 @@ int main(int argc, char* argv[]){
         state.successors = state.generate_successors();
         //printf("Instance %d: %llx\n", numOfInstances, state.value);
         std::cout << BFS_Graph(state) << std::endl;
+        std::cout << IterativeDeepening_DFS(state) << std::endl;
     }
 
     //state.successors = state.generate_successors();

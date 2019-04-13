@@ -59,7 +59,6 @@ std::vector<std::shared_ptr<State>> State::generate_successors(){
             temp = this->value & (~maskOnes); //Replace tile value with zeros
             newState = newState >> 12;
             newState = temp | newState;
-            //State upState;
             auto upState = std::make_shared<State>();
             upState->value = newState;
             upState->zeroPosition = switchPosition;
@@ -75,7 +74,6 @@ std::vector<std::shared_ptr<State>> State::generate_successors(){
             temp = this->value & (~maskOnes); //Replace tile value with zeros
             newState = newState >> 4;
             newState = temp | newState;
-            //State leftState;
             auto leftState = std::make_shared<State>();
             leftState->value = newState;
             leftState->zeroPosition = switchPosition;
@@ -91,7 +89,6 @@ std::vector<std::shared_ptr<State>> State::generate_successors(){
             temp = this->value & (~maskOnes); //Replace tile value with zeros
             newState = newState << 4;
             newState = temp | newState;
-            //State rightState;
             auto rightState = std::make_shared<State>();
             rightState->value = newState;
             rightState->zeroPosition = switchPosition;
@@ -107,7 +104,6 @@ std::vector<std::shared_ptr<State>> State::generate_successors(){
             temp = this->value & (~maskOnes); //Replace tile value with zeros
             newState = newState << 12;
             newState = temp | newState;
-            //State downState;
             auto downState = std::make_shared<State>();
             downState->value = newState;
             downState->zeroPosition = switchPosition;
@@ -124,7 +120,6 @@ std::vector<std::shared_ptr<State>> State::generate_successors(){
             temp = this->value & (~maskOnes); //Replace tile value with zeros
             newState = newState >> 16;
             newState = temp | newState;
-            //State upState;
             auto upState = std::make_shared<State>();
             upState->value = newState;
             upState->zeroPosition = switchPosition;
@@ -140,7 +135,6 @@ std::vector<std::shared_ptr<State>> State::generate_successors(){
             temp = this->value & (~maskOnes); //Replace tile value with zeros
             newState = newState >> 4;
             newState = temp | newState;
-            //State leftState;
             auto leftState = std::make_shared<State>();
             leftState->value = newState;
             leftState->zeroPosition = switchPosition;
@@ -156,7 +150,6 @@ std::vector<std::shared_ptr<State>> State::generate_successors(){
             temp = this->value & (~maskOnes); //Replace tile value with zeros
             newState = newState << 4;
             newState = temp | newState;
-            //State rightState;
             auto rightState = std::make_shared<State>();
             rightState->value = newState;
             rightState->zeroPosition = switchPosition;
@@ -172,7 +165,6 @@ std::vector<std::shared_ptr<State>> State::generate_successors(){
             temp = this->value & (~maskOnes); //Replace tile value with zeros
             newState = newState << 16;
             newState = temp | newState;
-            //State downState;
             auto downState = std::make_shared<State>();
             downState->value = newState;
             downState->zeroPosition = switchPosition;

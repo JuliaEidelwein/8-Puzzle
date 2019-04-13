@@ -24,7 +24,7 @@ Output BFS_Graph(State initialState){
             Node n1 = Node(*s, n.cost + 1);
             if(s->isGoal()){
                 output.expandedNodes++;
-                std::cout << nodeIdCounter << ',' << n1.cost;
+                //std::cout << nodeIdCounter << ',' << n1.cost;
                 output.time = clock() - startTime;
                 output.optimalSolutionSize = n1.cost;
                 return output;
@@ -41,3 +41,74 @@ Output BFS_Graph(State initialState){
     output.optimalSolutionSize = -1; //choosen representation for unsolvable
     return output;
 }
+
+Output IterativeDeepening_DFS(State initialState){
+    Output output;
+    output.heuristicInitialState = initialState.heuristicValue;
+    time_t startTime = clock();
+    for(int depth_limit = 0; depth_limit < 100; depth_limit++){
+        Output output = depth_limited_search(initialState, depth_limit);
+        //std::cout << "Profundidade " << depth_limit << std::endl;
+        if(output.optimalSolutionSize != -1){
+            output.time = clock() - startTime;
+            return output;
+        }
+    }
+}
+
+
+//TO-DO: improve algorithm, it gets extremely slow after depth 14
+Output depth_limited_search(State state, int depth_limit){
+    Output output;
+    output.optimalSolutionSize = -1;
+    //std::cout << "Profundidade " << depth_limit << std::endl;
+    if(state.isGoal()){
+        output.optimalSolutionSize = 0;
+        return output;
+    }
+    if(depth_limit > 0){
+        for(auto s: state.generate_successors()){
+            output = depth_limited_search(*s, depth_limit - 1);
+            if(output.optimalSolutionSize != -1){
+                output.optimalSolutionSize = depth_limit;
+                output.heuristicInitialState = state.heuristicValue;
+                return output;
+            }
+        }
+    }
+    return output;
+}
+
+
+/*
+Output depth_limited_search(State state, int depth_limit){
+    Output output;
+    output.optimalSolutionSize = -1;
+    std::stack<Node> open;
+    open.push(Node(state, 0));
+    //std::cout << "Profundidade " << depth_limit << std::endl;
+    while(!open.empty()){
+        Node n = open.top(); //gets first member, but does not take it out of the deque
+        open.pop();
+        if(n.state.isGoal()){
+            output.optimalSolutionSize = 0;
+            return output;
+        }
+        if(depth_limit > 0){
+            for(auto s: state.generate_successors()){
+                Node n1 = Node(*s, n.cost + 1);
+                open.push(n1);
+                output = depth_limited_search(*s, depth_limit - 1);
+                if(output.optimalSolutionSize != -1){
+                    output.optimalSolutionSize = depth_limit;
+                    output.heuristicInitialState = state.heuristicValue;
+                    return output;
+                }
+            }
+        }
+    }
+    return output;
+}
+*/
+
+
