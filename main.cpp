@@ -47,9 +47,17 @@ int main(int argc, char* argv[]){
             std::cout << Astar(state) << std::endl;
         }
     } else if(strcmp(algorithmType,"-idastar") == 0) {
-        std::cout << "IDA* not implemented yet" << std::endl;
+       for(int i = 0; i < numOfInstances; i++){
+            state = fill_initial_state(initialState, argv, puzzleSize, i);
+            state.successors = state.generate_successors();
+            std::cout << IDAstar(state) << std::endl;
+        }
     } else if(strcmp(algorithmType,"-gbfs") == 0) {
-        std::cout << "Greedy Best-First Search not implemented yet" << std::endl;
+       for(int i = 0; i < numOfInstances; i++){
+            state = fill_initial_state(initialState, argv, puzzleSize, i);
+            state.successors = state.generate_successors();
+            std::cout << Greedy_bestFirst_search(state) << std::endl;
+        }
     } else {
         std::cout << "Invalid algorithm!" << std::endl;
     }

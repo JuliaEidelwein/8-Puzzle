@@ -165,3 +165,94 @@ Output Astar(State initialState){
     output.optimalSolutionSize = -1; //choosen representation for unsolvable
     return output;
 }
+
+bool GreedyBFSComparator::operator() (Node n1, Node n2){
+    int n1Value = n1.state.heuristicValue;
+    int n2Value = n2.state.heuristicValue;
+    if(n1Value > n2Value)
+        return true;
+    else if(n1Value < n2Value)
+        return false;
+    return n1.id > n2.id;
+}
+
+
+Output Greedy_bestFirst_search(State initialState){
+    Output output;
+    output.heuristicInitialState = initialState.heuristicValue;
+    time_t startTime = clock();
+    std::priority_queue<Node, std::vector<Node>, GreedyBFSComparator> open;
+    if(initialState.heuristicValue < INT_MAX){
+        open.push(Node(initialState, 0));
+    }
+    std::set<unsigned long long> closed;
+    while(!open.empty()){
+        Node n = open.top();
+        open.pop();
+        if(closed.find(n.state.value) == closed.end()){//https://stackoverflow.com/questions/3136520/determine-if-map-contains-a-value-for-a-key
+            closed.insert(n.state.value);
+            //printf("Heuristic: %d | Cost: %d\n", n.state.heuristicValue, n.cost);
+            if(n.state.isGoal()){
+                output.time = clock() - startTime;
+                output.optimalSolutionSize = n.cost;
+                return output;
+            }
+            output.expandedNodes++;
+            for(auto s: n.state.generate_successors()){
+                if(s->heuristicValue < INT_MAX){
+                    Node n1 = Node(*s, n.cost + 1);
+                    open.push(n1);
+                }
+            }
+        }
+    }
+    output.time = clock() - startTime;
+    output.optimalSolutionSize = -1; //choosen representation for unsolvable
+    return output;
+}
+
+Output IDAstar(State initialState){
+    Output output;
+    time_t startTime = clock();
+    output.heuristicInitialState = -1;
+    Node n0 = Node(initialState, 0);
+    output.heuristicInitialState = n0.state.heuristicValue;
+    int f_limit = n0.state.heuristicValue;
+    while(f_limit < INT_MAX){
+        std::pair <int, Output> idaPair = ida_recursive_search(n0,f_limit, output);
+        f_limit = idaPair.first;
+        if(idaPair.second.optimalSolutionSize != -1){
+            idaPair.second.time = clock() - startTime;
+            return idaPair.second;
+        }
+    }
+    output.time = clock() - startTime;
+    return output;
+}
+
+std::pair <int, Output> ida_recursive_search(Node n, int f_limit, Output output){
+    int fn = n.cost + n.state.heuristicValue;
+    if(fn > f_limit){
+        output.optimalSolutionSize = -1;
+        return std::make_pair(fn, output);
+    }
+    if(n.state.isGoal()){
+        output.optimalSolutionSize = n.cost;
+        return std::make_pair(-1, output);
+    }
+    int next_limit = INT_MAX;
+    output.expandedNodes++;
+    for(auto s: n.state.generate_successors()){
+        if(s->heuristicValue < INT_MAX){
+            Node n1 = Node(*s, n.cost + 1);
+            std::pair <int, Output> idaPair = ida_recursive_search(n1,f_limit, output);
+            if(idaPair.second.optimalSolutionSize != -1){
+                return std::make_pair(-1, idaPair.second);
+            }
+            next_limit = std::min(next_limit,idaPair.first);
+        }
+
+    }
+    output.optimalSolutionSize = -1;
+    return std::make_pair(next_limit, output);
+}

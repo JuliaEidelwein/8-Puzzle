@@ -16,3 +16,14 @@ class AstarComparator{
     public:
     bool operator() (Node n1, Node n2);
 };
+
+Output Greedy_bestFirst_search(State initialState);
+
+class GreedyBFSComparator{
+    public:
+    bool operator() (Node n1, Node n2);
+};
+
+Output IDAstar(State initialState);
+
+std::pair <int, Output> ida_recursive_search(Node n, int f_limit, Output output);
