@@ -112,19 +112,21 @@ Output depth_limited_search(State state, int depth_limit){
 //Priority: fValue > hValue > LIFO
 bool AstarComparator::operator() (Node n1, Node n2){
     //First tries to tie with f
-    int difference = (n1.state.heuristicValue + n1.cost) - (n2.state.heuristicValue + n2.cost);
-    if(difference > 0)
+    int n1Value = (n1.state.heuristicValue + n1.cost);
+    int n2Value = (n2.state.heuristicValue + n2.cost);
+    if(n1Value > n2Value)
         return true;
-    else if(difference < 0)
+    else if(n1Value < n2Value)
         return false;
     //f is equal, tries with h
-    difference = n1.state.heuristicValue - n2.state.heuristicValue;
-    if(difference > 0)
+    n1Value = n1.state.heuristicValue;
+    n2Value = n2.state.heuristicValue;
+    if(n1Value > n2Value)
         return true;
-    else if(difference < 0)
+    else if(n1Value < n2Value)
         return false;
     //h is also equal, uses LIFO
-    return n1.id < n2.id;
+    return n1.id > n2.id;
 }
 
 
@@ -144,6 +146,7 @@ Output Astar(State initialState){
         open.pop();
         if(closed.find(n.state.value) == closed.end()){//https://stackoverflow.com/questions/3136520/determine-if-map-contains-a-value-for-a-key
             closed.insert(n.state.value);
+            //printf("Heuristic: %d | Cost: %d\n", n.state.heuristicValue, n.cost);
             if(n.state.isGoal()){
                 output.time = clock() - startTime;
                 output.optimalSolutionSize = n.cost;

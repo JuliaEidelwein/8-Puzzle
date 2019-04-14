@@ -50,6 +50,7 @@ std::vector<std::shared_ptr<State>> State::generate_successors(){
     unsigned long long temp, maskOnes, newState = 0xf;
     int switchPosition;
     std::vector<std::shared_ptr<State>> successors;
+    //printf("STATE: %llx ", this->value);
     if(globalPuzzleSize == 9){ //8 puzzle
         //UP
         if(this->zeroPosition < 6){ //not in position 8, 7 or 6
@@ -125,10 +126,11 @@ std::vector<std::shared_ptr<State>> State::generate_successors(){
             upState->zeroPosition = switchPosition;
             upState->heuristicValue = upState->heuristicFunction();
             successors.push_back(upState);
+            //printf("| UP: %llx ", upState->value);
             newState = 0xf;
         }
         //LEFT
-        if(((this->zeroPosition - 3) % 3) != 0){ //not in position 15, 11, 7 or 3
+        if(((this->zeroPosition - 3) % 4) != 0){ //not in position 15, 11, 7 or 3
             switchPosition = this->zeroPosition + 1;
             maskOnes = newState << 4*switchPosition;//Gets mask with ones only at the position the blank must go
             newState = this->value & maskOnes; //Extracts value of the tile at the position
@@ -140,6 +142,7 @@ std::vector<std::shared_ptr<State>> State::generate_successors(){
             leftState->zeroPosition = switchPosition;
             leftState->heuristicValue = leftState->heuristicFunction();
             successors.push_back(leftState);
+            //printf("| LEFT: %llx ", leftState->value);
             newState = 0xf;
         }
         //RIGHT
@@ -155,6 +158,7 @@ std::vector<std::shared_ptr<State>> State::generate_successors(){
             rightState->zeroPosition = switchPosition;
             rightState->heuristicValue = rightState->heuristicFunction();
             successors.push_back(rightState);
+            //printf("| RIGHT: %llx ", rightState->value);
             newState = 0xf;
         }
         //DOWN
@@ -170,9 +174,12 @@ std::vector<std::shared_ptr<State>> State::generate_successors(){
             downState->zeroPosition = switchPosition;
             downState->heuristicValue = downState->heuristicFunction();
             successors.push_back(downState);
+            //printf("| DOWN: %llx ", downState->value);
             newState = 0xf;
         }
     }
+    //printf("\n");
+    //std::cin.ignore();
     return successors;
 }
 
