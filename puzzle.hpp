@@ -38,10 +38,10 @@ class Node{
 
 class Output{
     public:
-    unsigned long long expandedNodes = 0;
+    unsigned long long expandedNodes = 1;
     int optimalSolutionSize = 0;
     time_t time;
-    float averageHeuristicValue = 0;
+    int averageHeuristicValue = 0;
     int heuristicInitialState;
 };
 

@@ -5,7 +5,6 @@ unsigned long long nodeIdCounter;
 
 Output BFS_Graph(State initialState){
     Output output;
-    output.heuristicInitialState = initialState.heuristicValue;
     time_t startTime = clock();
     if(initialState.isGoal()){
         output.time = clock() - startTime;
@@ -35,6 +34,7 @@ Output BFS_Graph(State initialState){
 
         }
     }
+
     output.time = clock() - startTime;
     output.optimalSolutionSize = -1; //choosen representation for unsolvable
     return output;
@@ -151,12 +151,16 @@ void print_set(std::set<unsigned long long> s){
 //Manhattan distance is admissible and consistent,
 //so we implemented A* without reopening
 Output Astar(State initialState){
+    unsigned long long generatedNodes = 0;
+    unsigned long long heuristicSum = 0;
     Output output;
     output.heuristicInitialState = initialState.heuristicValue;
     time_t startTime = clock();
     std::priority_queue<Node, std::vector<Node>, AstarComparator> open;
     if(initialState.heuristicValue < INT_MAX){
         open.push(Node(initialState, 0));
+        generatedNodes++;
+        heuristicSum = heuristicSum + initialState.heuristicValue;
     }
     std::set<unsigned long long> closed;
     while(!open.empty()){
@@ -171,13 +175,16 @@ Output Astar(State initialState){
             //printf("Heuristic: %d | Cost: %d\n", n.state.heuristicValue, n.cost);
             if(n.state.isGoal()){
                 output.time = clock() - startTime;
+                output.averageHeuristicValue = heuristicSum/generatedNodes;
                 output.optimalSolutionSize = n.cost;
                 return output;
             }
             output.expandedNodes++;
             for(auto s: n.state.generate_successors()){
                 if(s->heuristicValue < INT_MAX){
+                    heuristicSum = heuristicSum + s->heuristicValue;
                     Node n1 = Node(*s, n.cost + 1);
+                    generatedNodes++;
                     open.push(n1);
                     //printf("State %lld -> %llx has f = %d and h = %d\n", n1.id, n1.state.value, (n1.state.heuristicValue + n1.cost), n1.state.heuristicValue);
                 }
@@ -185,6 +192,7 @@ Output Astar(State initialState){
         }
     }
     output.time = clock() - startTime;
+    output.averageHeuristicValue = heuristicSum/generatedNodes;
     output.optimalSolutionSize = -1; //choosen representation for unsolvable
     return output;
 }
@@ -201,12 +209,16 @@ bool GreedyBFSComparator::operator() (Node n1, Node n2){
 
 
 Output Greedy_bestFirst_search(State initialState){
+    unsigned long long generatedNodes = 0;
+    unsigned long long heuristicSum = 0;
     Output output;
     output.heuristicInitialState = initialState.heuristicValue;
     time_t startTime = clock();
     std::priority_queue<Node, std::vector<Node>, GreedyBFSComparator> open;
     if(initialState.heuristicValue < INT_MAX){
         open.push(Node(initialState, 0));
+        heuristicSum = heuristicSum + initialState.heuristicValue;
+        generatedNodes++;
     }
     std::set<unsigned long long> closed;
     while(!open.empty()){
@@ -217,19 +229,23 @@ Output Greedy_bestFirst_search(State initialState){
             //printf("Heuristic: %d | Cost: %d\n", n.state.heuristicValue, n.cost);
             if(n.state.isGoal()){
                 output.time = clock() - startTime;
+                output.averageHeuristicValue = heuristicSum/generatedNodes;
                 output.optimalSolutionSize = n.cost;
                 return output;
             }
             output.expandedNodes++;
             for(auto s: n.state.generate_successors()){
                 if(s->heuristicValue < INT_MAX){
+                    heuristicSum = heuristicSum + s->heuristicValue;
                     Node n1 = Node(*s, n.cost + 1);
+                    generatedNodes++;
                     open.push(n1);
                 }
             }
         }
     }
     output.time = clock() - startTime;
+    output.averageHeuristicValue = heuristicSum/generatedNodes;
     output.optimalSolutionSize = -1; //choosen representation for unsolvable
     return output;
 }
