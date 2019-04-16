@@ -65,6 +65,7 @@ Output depth_limited_search(State state, int depth_limit){
         return output;
     }
     if(depth_limit > 0){
+        output.expandedNodes++;
         for(auto s: state.generate_successors()){
             output = depth_limited_search(*s, depth_limit - 1);
             if(output.optimalSolutionSize != -1){
@@ -129,6 +130,23 @@ bool AstarComparator::operator() (Node n1, Node n2){
     return n1.id > n2.id;
 }
 
+template<typename A> void print_queue(A pq){
+    std::cout << "Open: ";
+	while (!pq.empty()){
+        std::cout << pq.top().id << " ";
+        pq.pop();
+    }
+    std::cout << std::endl;
+}
+
+void print_set(std::set<unsigned long long> s){
+    std::cout << "Closed: ";
+    for (auto it=s.begin(); it != s.end(); ++it)
+        //std::cout << *it << " ";
+        printf("%llx ", *it);
+    std::cout << std::endl;
+}
+
 
 //Manhattan distance is admissible and consistent,
 //so we implemented A* without reopening
@@ -143,9 +161,13 @@ Output Astar(State initialState){
     std::set<unsigned long long> closed;
     while(!open.empty()){
         Node n = open.top();
+        //print_queue(open);
+        //printf("Chose %lld -> %llx with f = %d and h = %d\n", n.id, n.state.value, (n.state.heuristicValue + n.cost), n.state.heuristicValue);
+        //std::cin.ignore();
         open.pop();
         if(closed.find(n.state.value) == closed.end()){//https://stackoverflow.com/questions/3136520/determine-if-map-contains-a-value-for-a-key
             closed.insert(n.state.value);
+            //print_set(closed);
             //printf("Heuristic: %d | Cost: %d\n", n.state.heuristicValue, n.cost);
             if(n.state.isGoal()){
                 output.time = clock() - startTime;
@@ -157,6 +179,7 @@ Output Astar(State initialState){
                 if(s->heuristicValue < INT_MAX){
                     Node n1 = Node(*s, n.cost + 1);
                     open.push(n1);
+                    //printf("State %lld -> %llx has f = %d and h = %d\n", n1.id, n1.state.value, (n1.state.heuristicValue + n1.cost), n1.state.heuristicValue);
                 }
             }
         }
