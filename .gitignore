@@ -1,2 +1,5 @@
 # Compiled main 
 main
+
+#Callgrind outputs
+callgrind.*

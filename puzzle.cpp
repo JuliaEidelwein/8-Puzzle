@@ -46,10 +46,10 @@ State fill_initial_state(unsigned long long initialState, char* argv[], int puzz
     return newState;
 }
 
-std::vector<std::shared_ptr<State>> State::generate_successors(){
+std::vector<State*> State::generate_successors(){
     unsigned long long temp, maskOnes, newState = 0xf;
     int switchPosition;
-    std::vector<std::shared_ptr<State>> successors;
+    std::vector<State*> successors;
     //printf("STATE: %llx ", this->value);
     if(globalPuzzleSize == 9){ //8 puzzle
         //UP
@@ -60,7 +60,7 @@ std::vector<std::shared_ptr<State>> State::generate_successors(){
             temp = this->value & (~maskOnes); //Replace tile value with zeros
             newState = newState >> 12;
             newState = temp | newState;
-            auto upState = std::make_shared<State>();
+            State* upState = new State();
             upState->value = newState;
             upState->zeroPosition = switchPosition;
             upState->heuristicValue = upState->heuristicFunction();
@@ -75,7 +75,7 @@ std::vector<std::shared_ptr<State>> State::generate_successors(){
             temp = this->value & (~maskOnes); //Replace tile value with zeros
             newState = newState >> 4;
             newState = temp | newState;
-            auto leftState = std::make_shared<State>();
+            State* leftState = new State();
             leftState->value = newState;
             leftState->zeroPosition = switchPosition;
             leftState->heuristicValue = leftState->heuristicFunction();
@@ -90,7 +90,7 @@ std::vector<std::shared_ptr<State>> State::generate_successors(){
             temp = this->value & (~maskOnes); //Replace tile value with zeros
             newState = newState << 4;
             newState = temp | newState;
-            auto rightState = std::make_shared<State>();
+            State* rightState = new State();
             rightState->value = newState;
             rightState->zeroPosition = switchPosition;
             rightState->heuristicValue = rightState->heuristicFunction();
@@ -105,7 +105,7 @@ std::vector<std::shared_ptr<State>> State::generate_successors(){
             temp = this->value & (~maskOnes); //Replace tile value with zeros
             newState = newState << 12;
             newState = temp | newState;
-            auto downState = std::make_shared<State>();
+            State* downState = new State();
             downState->value = newState;
             downState->zeroPosition = switchPosition;
             downState->heuristicValue = downState->heuristicFunction();
@@ -121,7 +121,7 @@ std::vector<std::shared_ptr<State>> State::generate_successors(){
             temp = this->value & (~maskOnes); //Replace tile value with zeros
             newState = newState >> 16;
             newState = temp | newState;
-            auto upState = std::make_shared<State>();
+            State* upState = new State();
             upState->value = newState;
             upState->zeroPosition = switchPosition;
             upState->heuristicValue = upState->heuristicFunction();
@@ -137,7 +137,7 @@ std::vector<std::shared_ptr<State>> State::generate_successors(){
             temp = this->value & (~maskOnes); //Replace tile value with zeros
             newState = newState >> 4;
             newState = temp | newState;
-            auto leftState = std::make_shared<State>();
+            State* leftState = new State();
             leftState->value = newState;
             leftState->zeroPosition = switchPosition;
             leftState->heuristicValue = leftState->heuristicFunction();
@@ -153,7 +153,7 @@ std::vector<std::shared_ptr<State>> State::generate_successors(){
             temp = this->value & (~maskOnes); //Replace tile value with zeros
             newState = newState << 4;
             newState = temp | newState;
-            auto rightState = std::make_shared<State>();
+            State* rightState = new State();
             rightState->value = newState;
             rightState->zeroPosition = switchPosition;
             rightState->heuristicValue = rightState->heuristicFunction();
@@ -169,7 +169,7 @@ std::vector<std::shared_ptr<State>> State::generate_successors(){
             temp = this->value & (~maskOnes); //Replace tile value with zeros
             newState = newState << 16;
             newState = temp | newState;
-            auto downState = std::make_shared<State>();
+            State* downState = new State();
             downState->value = newState;
             downState->zeroPosition = switchPosition;
             downState->heuristicValue = downState->heuristicFunction();

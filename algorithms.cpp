@@ -19,7 +19,7 @@ Output BFS_Graph(State initialState){
         Node n = open.front(); //gets first member, but does not take it out of the deque
         open.pop_front(); //pop_front() only deletes the first member, returning void
         output.expandedNodes++;
-        for(auto s: n.state.generate_successors()){
+        for(State* s: n.state.generate_successors()){
             Node n1 = Node(*s, n.cost + 1);
             if(s->isGoal()){
                 //std::cout << nodeIdCounter << ',' << n1.cost;
@@ -66,7 +66,7 @@ Output depth_limited_search(State state, int depth_limit){
     }
     if(depth_limit > 0){
         output.expandedNodes++;
-        for(auto s: state.generate_successors()){
+        for(State* s: state.generate_successors()){
             output = depth_limited_search(*s, depth_limit - 1);
             if(output.optimalSolutionSize != -1){
                 output.optimalSolutionSize = depth_limit;
@@ -94,7 +94,7 @@ Output depth_limited_search(State state, int depth_limit){
             return output;
         }
         if(depth_limit > 0){
-            for(auto s: state.generate_successors()){
+            for(State* s: state.generate_successors()){
                 Node n1 = Node(*s, n.cost + 1);
                 open.push(n1);
                 output = depth_limited_search(*s, depth_limit - 1);
@@ -193,7 +193,7 @@ Output Astar(State initialState){
                 printf("Expanded %lld\n", output.expandedNodes);
             }
             */
-            for(auto s: n.state.generate_successors()){
+            for(State* s: n.state.generate_successors()){
                 if(s->heuristicValue < INT_MAX){
                     heuristicSum = heuristicSum + s->heuristicValue;
                     Node n1 = Node(*s, n.cost + 1);
@@ -247,7 +247,7 @@ Output Greedy_bestFirst_search(State initialState){
                 return output;
             }
             output.expandedNodes++;
-            for(auto s: n.state.generate_successors()){
+            for(State* s: n.state.generate_successors()){
                 if(s->heuristicValue < INT_MAX){
                     heuristicSum = heuristicSum + s->heuristicValue;
                     Node n1 = Node(*s, n.cost + 1);
@@ -294,7 +294,7 @@ std::pair <int, Output> ida_recursive_search(Node n, int f_limit, Output output)
     }
     int next_limit = INT_MAX;
     output.expandedNodes++;
-    for(auto s: n.state.generate_successors()){
+    for(State* s: n.state.generate_successors()){
         if(s->heuristicValue < INT_MAX){
             Node n1 = Node(*s, n.cost + 1);
             std::pair <int, Output> idaPair = ida_recursive_search(n1,f_limit, output);

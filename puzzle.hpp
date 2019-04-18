@@ -18,9 +18,9 @@ class State{
     unsigned long long value;
     int zeroPosition;
     int heuristicValue;
-    std::vector<std::shared_ptr<State>> successors;
+    std::vector<State*> successors;
 
-    std::vector<std::shared_ptr<State>> generate_successors();
+    std::vector<State*> generate_successors();
     bool isGoal();
     int heuristicFunction();
 
