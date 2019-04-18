@@ -15,6 +15,8 @@ const unsigned long long GOAL15 = 0x123456789abcdef;
 
 class State{
     public:
+    State();
+    State(unsigned long long value, int zeroPosition);
     unsigned long long value;
     int zeroPosition;
     int heuristicValue;
@@ -30,10 +32,10 @@ class State{
 class Node{
     public:
     unsigned long long id;
-    State state;
+    State *state;
     int cost;
 
-    Node(State state, int cost);
+    Node(State *state, int cost);
 };
 
 class Output{

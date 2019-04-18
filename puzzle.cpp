@@ -22,7 +22,6 @@ We mark each position in the following order:
 State fill_initial_state(unsigned long long initialState, char* argv[], int puzzleSize, int instance){
     int startPosition = (2 + instance*puzzleSize), endPosition = (2 + (1+instance)*puzzleSize);
     int i, entry, shiftAmount = 0, zeroPosition = 0;
-    State newState;
     globalPuzzleSize = puzzleSize;
     nodeIdCounter = 0;
     for(i = startPosition; i < endPosition - 1; i++){
@@ -40,10 +39,17 @@ State fill_initial_state(unsigned long long initialState, char* argv[], int puzz
         zeroPosition = shiftAmount;
     }
     zeroPosition = (puzzleSize - 1) - zeroPosition;
-    newState.value = initialState;
-    newState.zeroPosition = zeroPosition;
-    newState.heuristicValue = newState.heuristicFunction();
+    State newState = State(initialState, zeroPosition);
     return newState;
+}
+
+State::State(){
+}
+
+State::State(unsigned long long value, int zeroPosition){
+    this->value = value;
+    this->zeroPosition = zeroPosition;
+    this->heuristicValue = this->heuristicFunction();
 }
 
 std::vector<State*> State::generate_successors(){
@@ -60,10 +66,7 @@ std::vector<State*> State::generate_successors(){
             temp = this->value & (~maskOnes); //Replace tile value with zeros
             newState = newState >> 12;
             newState = temp | newState;
-            State* upState = new State();
-            upState->value = newState;
-            upState->zeroPosition = switchPosition;
-            upState->heuristicValue = upState->heuristicFunction();
+            State* upState = new State(newState, switchPosition);
             successors.push_back(upState);
             newState = 0xf;
         }
@@ -75,10 +78,7 @@ std::vector<State*> State::generate_successors(){
             temp = this->value & (~maskOnes); //Replace tile value with zeros
             newState = newState >> 4;
             newState = temp | newState;
-            State* leftState = new State();
-            leftState->value = newState;
-            leftState->zeroPosition = switchPosition;
-            leftState->heuristicValue = leftState->heuristicFunction();
+            State* leftState = new State(newState, switchPosition);
             successors.push_back(leftState);
             newState = 0xf;
         }
@@ -90,10 +90,7 @@ std::vector<State*> State::generate_successors(){
             temp = this->value & (~maskOnes); //Replace tile value with zeros
             newState = newState << 4;
             newState = temp | newState;
-            State* rightState = new State();
-            rightState->value = newState;
-            rightState->zeroPosition = switchPosition;
-            rightState->heuristicValue = rightState->heuristicFunction();
+            State* rightState = new State(newState, switchPosition);
             successors.push_back(rightState);
             newState = 0xf;
         }
@@ -105,10 +102,7 @@ std::vector<State*> State::generate_successors(){
             temp = this->value & (~maskOnes); //Replace tile value with zeros
             newState = newState << 12;
             newState = temp | newState;
-            State* downState = new State();
-            downState->value = newState;
-            downState->zeroPosition = switchPosition;
-            downState->heuristicValue = downState->heuristicFunction();
+            State* downState = new State(newState, switchPosition);
             successors.push_back(downState);
             newState = 0xf;
         }
@@ -121,10 +115,7 @@ std::vector<State*> State::generate_successors(){
             temp = this->value & (~maskOnes); //Replace tile value with zeros
             newState = newState >> 16;
             newState = temp | newState;
-            State* upState = new State();
-            upState->value = newState;
-            upState->zeroPosition = switchPosition;
-            upState->heuristicValue = upState->heuristicFunction();
+            State* upState = new State(newState, switchPosition);
             successors.push_back(upState);
             //printf("| UP: %llx ", upState->value);
             newState = 0xf;
@@ -137,10 +128,7 @@ std::vector<State*> State::generate_successors(){
             temp = this->value & (~maskOnes); //Replace tile value with zeros
             newState = newState >> 4;
             newState = temp | newState;
-            State* leftState = new State();
-            leftState->value = newState;
-            leftState->zeroPosition = switchPosition;
-            leftState->heuristicValue = leftState->heuristicFunction();
+            State* leftState = new State(newState, switchPosition);
             successors.push_back(leftState);
             //printf("| LEFT: %llx ", leftState->value);
             newState = 0xf;
@@ -153,10 +141,7 @@ std::vector<State*> State::generate_successors(){
             temp = this->value & (~maskOnes); //Replace tile value with zeros
             newState = newState << 4;
             newState = temp | newState;
-            State* rightState = new State();
-            rightState->value = newState;
-            rightState->zeroPosition = switchPosition;
-            rightState->heuristicValue = rightState->heuristicFunction();
+            State* rightState = new State(newState, switchPosition);
             successors.push_back(rightState);
             //printf("| RIGHT: %llx ", rightState->value);
             newState = 0xf;
@@ -169,10 +154,7 @@ std::vector<State*> State::generate_successors(){
             temp = this->value & (~maskOnes); //Replace tile value with zeros
             newState = newState << 16;
             newState = temp | newState;
-            State* downState = new State();
-            downState->value = newState;
-            downState->zeroPosition = switchPosition;
-            downState->heuristicValue = downState->heuristicFunction();
+            State* downState = new State(newState, switchPosition);
             successors.push_back(downState);
             //printf("| DOWN: %llx ", downState->value);
             newState = 0xf;
@@ -270,7 +252,7 @@ bool State::isGoal(){
     }
 }
 
-Node::Node(State state, int cost){
+Node::Node(State *state, int cost){
     this->id = nodeIdCounter;
     this->state = state;
     this->cost = cost;

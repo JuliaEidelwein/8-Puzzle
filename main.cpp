@@ -32,31 +32,31 @@ int main(int argc, char* argv[]){
             state = fill_initial_state(initialState, argv, puzzleSize, i);
             state.successors = state.generate_successors();
             //printf("Instance %d: %llx\n", numOfInstances, state.value);
-            std::cout << BFS_Graph(state) << std::endl;
+            std::cout << BFS_Graph(&state) << std::endl;
         }
     } else if(strcmp(algorithmType,"-idfs") == 0) {
        for(int i = 0; i < numOfInstances; i++){
             state = fill_initial_state(initialState, argv, puzzleSize, i);
             state.successors = state.generate_successors();
-            std::cout << IterativeDeepening_DFS(state) << std::endl;
+            std::cout << IterativeDeepening_DFS(&state) << std::endl;
         }
     } else if(strcmp(algorithmType,"-astar") == 0) {
        for(int i = 0; i < numOfInstances; i++){
             state = fill_initial_state(initialState, argv, puzzleSize, i);
             state.successors = state.generate_successors();
-            std::cout << Astar(state) << std::endl;
+            std::cout << Astar(&state) << std::endl;
         }
     } else if(strcmp(algorithmType,"-idastar") == 0) {
        for(int i = 0; i < numOfInstances; i++){
             state = fill_initial_state(initialState, argv, puzzleSize, i);
             state.successors = state.generate_successors();
-            std::cout << IDAstar(state) << std::endl;
+            std::cout << IDAstar(&state) << std::endl;
         }
     } else if(strcmp(algorithmType,"-gbfs") == 0) {
        for(int i = 0; i < numOfInstances; i++){
             state = fill_initial_state(initialState, argv, puzzleSize, i);
             state.successors = state.generate_successors();
-            std::cout << Greedy_bestFirst_search(state) << std::endl;
+            std::cout << Greedy_bestFirst_search(&state) << std::endl;
         }
     } else {
         std::cout << "Invalid algorithm!" << std::endl;
