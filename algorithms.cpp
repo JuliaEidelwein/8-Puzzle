@@ -45,7 +45,7 @@ Output IterativeDeepening_DFS(State *initialState){
     output.heuristicInitialState = initialState->heuristicValue;
     time_t startTime = clock();
     for(int depth_limit = 0; depth_limit < 100; depth_limit++){
-        Output output = depth_limited_search(initialState, depth_limit, 0);
+        output = depth_limited_search(initialState, depth_limit, 0);
         //std::cout << "Profundidade " << depth_limit << std::endl;
         if(output.optimalSolutionSize != -1){
             output.time = clock() - startTime;
@@ -67,7 +67,7 @@ Output depth_limited_search(State *state, int depth_limit, unsigned long long pa
     if(depth_limit > 0){
         output.expandedNodes++;
         for(State* s: state->generate_successors(parent)){
-            output = depth_limited_search(s, depth_limit - 1, parent);
+            output = depth_limited_search(s, depth_limit - 1, state->value);
             if(output.optimalSolutionSize != -1){
                 output.optimalSolutionSize = depth_limit;
                 output.heuristicInitialState = state->heuristicValue;

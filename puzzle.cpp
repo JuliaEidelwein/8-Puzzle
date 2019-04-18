@@ -180,6 +180,7 @@ std::vector<State*> State::generate_successors(unsigned long long parent){
             newState = newState >> 12;
             newState = temp | newState;
             if(newState != parent){
+                //printf("%llx not equal to %llx\n", newState, parent);
                 State* upState = new State(newState, switchPosition);
                 successors.push_back(upState);
             }
@@ -194,6 +195,7 @@ std::vector<State*> State::generate_successors(unsigned long long parent){
             newState = newState >> 4;
             newState = temp | newState;
             if(newState != parent){
+                //printf("%llx not equal to %llx\n", newState, parent);
                 State* leftState = new State(newState, switchPosition);
                 successors.push_back(leftState);
             }
@@ -208,6 +210,7 @@ std::vector<State*> State::generate_successors(unsigned long long parent){
             newState = newState << 4;
             newState = temp | newState;
             if(newState != parent){
+                //printf("%llx not equal to %llx\n", newState, parent);
                 State* rightState = new State(newState, switchPosition);
                 successors.push_back(rightState);
             }
@@ -222,6 +225,7 @@ std::vector<State*> State::generate_successors(unsigned long long parent){
             newState = newState << 12;
             newState = temp | newState;
             if(newState != parent){
+                //printf("%llx not equal to %llx\n", newState, parent);
                 State* downState = new State(newState, switchPosition);
                 successors.push_back(downState);
             }
