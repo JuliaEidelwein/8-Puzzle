@@ -194,11 +194,13 @@ int State::heuristicFunction(){
             int goalPosition = getGoalTilePosition(currentTile);
             manhattanDist = manhattanDist + std::abs(getRow(i) - getRow(goalPosition));
             manhattanDist = manhattanDist + std::abs(getColumn(i) - getColumn(goalPosition));
-            //std::cout << "Tile at " << i << " has Column " <<  getColumn(i) << " and Row " << getRow(i) << std::endl;
-            //std::cout << "Goal tile at " << goalPosition << " has Column " <<  getColumn(goalPosition) << " and Row " << getRow(goalPosition) << std::endl;
+            //std::cout << "Tile at " << i << " has Row " << getRow(i) << " and Column " <<  getColumn(i) << std::endl;
+            //std::cout << "Goal tile at " << goalPosition << " has Row " << getRow(goalPosition)<< " and Column " <<  getColumn(goalPosition) << std::endl;
+            //std::cout << "Distance: " << std::abs(getRow(i) - getRow(goalPosition)) << " + " << std::abs(getColumn(i) - getColumn(goalPosition)) << std::endl;
             //std::cin.ignore();
         }
     }
+    //std::cout << "Total: " << manhattanDist << std::endl;
     return manhattanDist;
 }
 

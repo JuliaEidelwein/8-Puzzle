@@ -153,8 +153,10 @@ void print_set(std::set<unsigned long long> s){
 Output Astar(State initialState){
     unsigned long long generatedNodes = 0;
     unsigned long long heuristicSum = 0;
+    int previousF = 0;
     Output output;
     output.heuristicInitialState = initialState.heuristicValue;
+    //printf("heusristic: %d\n", initialState.heuristicValue);
     time_t startTime = clock();
     std::priority_queue<Node, std::vector<Node>, AstarComparator> open;
     if(initialState.heuristicValue < INT_MAX){
@@ -165,21 +167,32 @@ Output Astar(State initialState){
     std::set<unsigned long long> closed;
     while(!open.empty()){
         Node n = open.top();
+        /*
+        if((n.state.heuristicValue + n.cost) > previousF){
+            previousF = (n.state.heuristicValue + n.cost);
+            printf("F value =  %d\n", previousF);
+        }
+        */
         //print_queue(open);
         //printf("Chose %lld -> %llx with f = %d and h = %d\n", n.id, n.state.value, (n.state.heuristicValue + n.cost), n.state.heuristicValue);
         //std::cin.ignore();
         open.pop();
         if(closed.find(n.state.value) == closed.end()){//https://stackoverflow.com/questions/3136520/determine-if-map-contains-a-value-for-a-key
-            closed.insert(n.state.value);
+            closed.insert(closed.begin(), n.state.value);
             //print_set(closed);
             //printf("Heuristic: %d | Cost: %d\n", n.state.heuristicValue, n.cost);
             if(n.state.isGoal()){
                 output.time = clock() - startTime;
-                output.averageHeuristicValue = heuristicSum/generatedNodes;
+                output.averageHeuristicValue = (float)heuristicSum/generatedNodes;
                 output.optimalSolutionSize = n.cost;
                 return output;
             }
             output.expandedNodes++;
+            /*
+            if(output.expandedNodes%100000 == 0){
+                printf("Expanded %lld\n", output.expandedNodes);
+            }
+            */
             for(auto s: n.state.generate_successors()){
                 if(s->heuristicValue < INT_MAX){
                     heuristicSum = heuristicSum + s->heuristicValue;
@@ -192,7 +205,7 @@ Output Astar(State initialState){
         }
     }
     output.time = clock() - startTime;
-    output.averageHeuristicValue = heuristicSum/generatedNodes;
+    output.averageHeuristicValue = (float)heuristicSum/generatedNodes;
     output.optimalSolutionSize = -1; //choosen representation for unsolvable
     return output;
 }

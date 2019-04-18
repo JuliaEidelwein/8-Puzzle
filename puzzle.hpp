@@ -10,8 +10,8 @@ extern int globalPuzzleSize;
 extern unsigned long long nodeIdCounter;
 #endif
 
-const unsigned long long GOAL8 = 0x123456780;
-const unsigned long long GOAL15 = 0x123456789abcdef0;
+const unsigned long long GOAL8 = 0x12345678;
+const unsigned long long GOAL15 = 0x123456789abcdef;
 
 class State{
     public:
@@ -41,7 +41,7 @@ class Output{
     unsigned long long expandedNodes = 1;
     int optimalSolutionSize = 0;
     time_t time;
-    int averageHeuristicValue = 0;
+    float averageHeuristicValue = 0;
     int heuristicInitialState;
 };
 
