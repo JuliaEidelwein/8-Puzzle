@@ -9,7 +9,7 @@
 Output BFS_Graph(State *initialState);
 
 Output IterativeDeepening_DFS(State *initialState);
-Output depth_limited_search(State *state, int depth_limit);
+Output depth_limited_search(State *state, int depth_limit, unsigned long long parent);
 
 Output Astar(State *initialState);
 
@@ -27,4 +27,4 @@ class GreedyBFSComparator{
 
 Output IDAstar(State *initialState);
 
-std::pair <int, Output> ida_recursive_search(Node n, int f_limit, Output output);
+std::pair <int, Output> ida_recursive_search(Node n, int f_limit, Output output, unsigned long long parent);

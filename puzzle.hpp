@@ -23,6 +23,7 @@ class State{
     std::vector<State*> successors;
 
     std::vector<State*> generate_successors();
+    std::vector<State*> generate_successors(unsigned long long parent);
     bool isGoal();
     int heuristicFunction();
 

@@ -45,7 +45,7 @@ Output IterativeDeepening_DFS(State *initialState){
     output.heuristicInitialState = initialState->heuristicValue;
     time_t startTime = clock();
     for(int depth_limit = 0; depth_limit < 100; depth_limit++){
-        Output output = depth_limited_search(initialState, depth_limit);
+        Output output = depth_limited_search(initialState, depth_limit, 0);
         //std::cout << "Profundidade " << depth_limit << std::endl;
         if(output.optimalSolutionSize != -1){
             output.time = clock() - startTime;
@@ -56,7 +56,7 @@ Output IterativeDeepening_DFS(State *initialState){
 
 
 //TO-DO: improve algorithm, it gets extremely slow after depth 14
-Output depth_limited_search(State *state, int depth_limit){
+Output depth_limited_search(State *state, int depth_limit, unsigned long long parent){
     Output output;
     output.optimalSolutionSize = -1;
     //std::cout << "Profundidade " << depth_limit << std::endl;
@@ -66,8 +66,8 @@ Output depth_limited_search(State *state, int depth_limit){
     }
     if(depth_limit > 0){
         output.expandedNodes++;
-        for(State* s: state->generate_successors()){
-            output = depth_limited_search(s, depth_limit - 1);
+        for(State* s: state->generate_successors(parent)){
+            output = depth_limited_search(s, depth_limit - 1, parent);
             if(output.optimalSolutionSize != -1){
                 output.optimalSolutionSize = depth_limit;
                 output.heuristicInitialState = state->heuristicValue;
@@ -271,7 +271,7 @@ Output IDAstar(State *initialState){
     output.heuristicInitialState = n0.state->heuristicValue;
     int f_limit = n0.state->heuristicValue;
     while(f_limit < INT_MAX){
-        std::pair <int, Output> idaPair = ida_recursive_search(n0,f_limit, output);
+        std::pair <int, Output> idaPair = ida_recursive_search(n0,f_limit, output, 0);
         f_limit = idaPair.first;
         if(idaPair.second.optimalSolutionSize != -1){
             idaPair.second.time = clock() - startTime;
@@ -282,7 +282,7 @@ Output IDAstar(State *initialState){
     return output;
 }
 
-std::pair <int, Output> ida_recursive_search(Node n, int f_limit, Output output){
+std::pair <int, Output> ida_recursive_search(Node n, int f_limit, Output output, unsigned long long parent){
     int fn = n.cost + n.state->heuristicValue;
     if(fn > f_limit){
         output.optimalSolutionSize = -1;
@@ -294,10 +294,10 @@ std::pair <int, Output> ida_recursive_search(Node n, int f_limit, Output output)
     }
     int next_limit = INT_MAX;
     output.expandedNodes++;
-    for(State* s: n.state->generate_successors()){
+    for(State* s: n.state->generate_successors(parent)){
         if(s->heuristicValue < INT_MAX){
             Node n1 = Node(s, n.cost + 1);
-            std::pair <int, Output> idaPair = ida_recursive_search(n1,f_limit, output);
+            std::pair <int, Output> idaPair = ida_recursive_search(n1,f_limit, output, n.state->value);
             if(idaPair.second.optimalSolutionSize != -1){
                 return std::make_pair(-1, idaPair.second);
             }
