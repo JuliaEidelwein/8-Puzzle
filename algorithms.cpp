@@ -45,7 +45,7 @@ Output IterativeDeepening_DFS(State *initialState){
     output.heuristicInitialState = initialState->heuristicValue;
     time_t startTime = clock();
     for(int depth_limit = 0; depth_limit < 100; depth_limit++){
-        output = depth_limited_search(initialState, depth_limit, 0);
+        output = depth_limited_search(initialState, depth_limit, 0, &output);
         //std::cout << "Profundidade " << depth_limit << std::endl;
         if(output.optimalSolutionSize != -1){
             output.time = clock() - startTime;
@@ -56,26 +56,25 @@ Output IterativeDeepening_DFS(State *initialState){
 
 
 //TO-DO: improve algorithm, it gets extremely slow after depth 14
-Output depth_limited_search(State *state, int depth_limit, unsigned long long parent){
-    Output output;
-    output.optimalSolutionSize = -1;
+Output depth_limited_search(State *state, int depth_limit, unsigned long long parent, Output *output){
     //std::cout << "Profundidade " << depth_limit << std::endl;
     if(state->isGoal()){
-        output.optimalSolutionSize = 0;
-        return output;
+        output->optimalSolutionSize = 0;
+        return *output;
     }
     if(depth_limit > 0){
-        output.expandedNodes++;
+        output->expandedNodes++;
         for(State* s: state->generate_successors(parent)){
-            output = depth_limited_search(s, depth_limit - 1, state->value);
-            if(output.optimalSolutionSize != -1){
-                output.optimalSolutionSize = depth_limit;
-                output.heuristicInitialState = state->heuristicValue;
-                return output;
+            *output = depth_limited_search(s, depth_limit - 1, state->value, output);
+            if(output->optimalSolutionSize != -1){
+                output->optimalSolutionSize = depth_limit;
+                output->heuristicInitialState = state->heuristicValue;
+                return *output;
             }
         }
     }
-    return output;
+    output->optimalSolutionSize = -1;
+    return *output;
 }
 
 
@@ -127,7 +126,7 @@ bool AstarComparator::operator() (Node n1, Node n2){
     else if(n1Value < n2Value)
         return false;
     //h is also equal, uses LIFO
-    return n1.id > n2.id;
+    return n1.id < n2.id;
 }
 
 template<typename A> void print_queue(A pq){
@@ -153,7 +152,7 @@ void print_set(std::set<unsigned long long> s){
 Output Astar(State *initialState){
     unsigned long long generatedNodes = 0;
     unsigned long long heuristicSum = 0;
-    int previousF = 0;
+    //int previousF = 0;
     Output output;
     output.heuristicInitialState = initialState->heuristicValue;
     //printf("heusristic: %d\n", initialState->heuristicValue);

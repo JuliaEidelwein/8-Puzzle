@@ -9,7 +9,7 @@
 Output BFS_Graph(State *initialState);
 
 Output IterativeDeepening_DFS(State *initialState);
-Output depth_limited_search(State *state, int depth_limit, unsigned long long parent);
+Output depth_limited_search(State *state, int depth_limit, unsigned long long parent, Output *output);
 
 Output Astar(State *initialState);
 

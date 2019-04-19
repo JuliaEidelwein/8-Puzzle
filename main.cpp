@@ -10,7 +10,7 @@ int main(int argc, char* argv[]){
     if(argc > 2){
         algorithmType = argv[1];
         for(i = 2; i < argc; i++){
-            if(argv[i][1] && argv[i][1] == ',' && puzzleSize == -1){
+            if((argv[i][1] && argv[i][1] == ',' && puzzleSize == -1) || (argv[i][2] && argv[i][2] == ',' && puzzleSize == -1)){
                 puzzleSize = i - 1;
             }
         }
