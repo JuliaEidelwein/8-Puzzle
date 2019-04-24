@@ -46,6 +46,8 @@ class Output{
     time_t time;
     float averageHeuristicValue = 0;
     int heuristicInitialState;
+    unsigned long long generatedNodes = 0;
+    unsigned long long heuristicSum = 0;
 };
 
 

@@ -27,4 +27,4 @@ class GreedyBFSComparator{
 
 Output IDAstar(State *initialState);
 
-std::pair <int, Output> ida_recursive_search(Node n, int f_limit, Output output, unsigned long long parent);
+std::pair <int, Output> ida_recursive_search(Node n, int f_limit, Output *output, unsigned long long parent);

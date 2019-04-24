@@ -5,6 +5,7 @@ unsigned long long nodeIdCounter;
 
 Output BFS_Graph(State *initialState){
     Output output;
+    output.heuristicInitialState = initialState->heuristicValue;
     time_t startTime = clock();
     if(initialState->isGoal()){
         output.time = clock() - startTime;
@@ -78,37 +79,6 @@ Output depth_limited_search(State *state, int depth_limit, unsigned long long pa
 }
 
 
-/*
-Output depth_limited_search(State state, int depth_limit){
-    Output output;
-    output.optimalSolutionSize = -1;
-    std::stack<Node> open;
-    open.push(Node(state, 0));
-    //std::cout << "Profundidade " << depth_limit << std::endl;
-    while(!open.empty()){
-        Node n = open.top(); //gets first member, but does not take it out of the deque
-        open.pop();
-        if(n.state->isGoal()){
-            output.optimalSolutionSize = 0;
-            return output;
-        }
-        if(depth_limit > 0){
-            for(State* s: state->generate_successors()){
-                Node n1 = Node(*s, n.cost + 1);
-                open.push(n1);
-                output = depth_limited_search(*s, depth_limit - 1);
-                if(output.optimalSolutionSize != -1){
-                    output.optimalSolutionSize = depth_limit;
-                    output.heuristicInitialState = state->heuristicValue;
-                    return output;
-                }
-            }
-        }
-    }
-    return output;
-}
-*/
-
 //Priority: fValue > hValue > LIFO
 bool AstarComparator::operator() (Node n1, Node n2){
     //First tries to tie with f
@@ -129,82 +99,47 @@ bool AstarComparator::operator() (Node n1, Node n2){
     return n1.id < n2.id;
 }
 
-template<typename A> void print_queue(A pq){
-    std::cout << "Open: ";
-	while (!pq.empty()){
-        std::cout << pq.top().id << " ";
-        pq.pop();
-    }
-    std::cout << std::endl;
-}
-
-void print_set(std::set<unsigned long long> s){
-    std::cout << "Closed: ";
-    for (auto it=s.begin(); it != s.end(); ++it)
-        //std::cout << *it << " ";
-        printf("%llx ", *it);
-    std::cout << std::endl;
-}
-
 
 //Manhattan distance is admissible and consistent,
 //so we implemented A* without reopening
 Output Astar(State *initialState){
-    unsigned long long generatedNodes = 0;
-    unsigned long long heuristicSum = 0;
-    //int previousF = 0;
+    unsigned long long parent = 0;
     Output output;
     output.heuristicInitialState = initialState->heuristicValue;
-    //printf("heusristic: %d\n", initialState->heuristicValue);
     time_t startTime = clock();
     std::priority_queue<Node, std::vector<Node>, AstarComparator> open;
     if(initialState->heuristicValue < INT_MAX){
         open.push(Node(initialState, 0));
-        generatedNodes++;
-        heuristicSum = heuristicSum + initialState->heuristicValue;
+        output.generatedNodes++;
+        output.heuristicSum = output.heuristicSum + initialState->heuristicValue;
     }
     std::unordered_set<unsigned long long> closed;
     while(!open.empty()){
         Node n = open.top();
-        /*
-        if((n.state->heuristicValue + n.cost) > previousF){
-            previousF = (n.state->heuristicValue + n.cost);
-            printf("F value =  %d\n", previousF);
-        }
-        */
-        //print_queue(open);
-        //printf("Chose %lld -> %llx with f = %d and h = %d\n", n.id, n.state->value, (n.state->heuristicValue + n.cost), n.state->heuristicValue);
-        //std::cin.ignore();
         open.pop();
         if(closed.find(n.state->value) == closed.end()){//https://stackoverflow.com/questions/3136520/determine-if-map-contains-a-value-for-a-key
             closed.insert(n.state->value);
-            //print_set(closed);
-            //printf("Heuristic: %d | Cost: %d\n", n.state->heuristicValue, n.cost);
             if(n.state->isGoal()){
                 output.time = clock() - startTime;
-                output.averageHeuristicValue = (float)heuristicSum/generatedNodes;
+                output.averageHeuristicValue = (float)output.heuristicSum/output.generatedNodes;
                 output.optimalSolutionSize = n.cost;
                 return output;
             }
             output.expandedNodes++;
-            /*
-            if(output.expandedNodes%100000 == 0){
-                printf("Expanded %lld\n", output.expandedNodes);
-            }
-            */
+
             for(State* s: n.state->generate_successors()){
                 if(s->heuristicValue < INT_MAX){
-                    heuristicSum = heuristicSum + s->heuristicValue;
+                    output.heuristicSum = output.heuristicSum + s->heuristicValue;
                     Node n1 = Node(s, n.cost + 1);
-                    generatedNodes++;
+                    output.generatedNodes++;
                     open.push(n1);
-                    //printf("State %lld -> %llx has f = %d and h = %d\n", n1.id, n1.state->value, (n1.state->heuristicValue + n1.cost), n1.state->heuristicValue);
                 }
             }
+            parent = n.state->value;
         }
     }
     output.time = clock() - startTime;
-    output.averageHeuristicValue = (float)heuristicSum/generatedNodes;
+    output.averageHeuristicValue = (float)output.heuristicSum/output.generatedNodes;
     output.optimalSolutionSize = -1; //choosen representation for unsolvable
     return output;
 }
@@ -216,21 +151,19 @@ bool GreedyBFSComparator::operator() (Node n1, Node n2){
         return true;
     else if(n1Value < n2Value)
         return false;
-    return n1.id > n2.id;
+    return n1.id < n2.id;
 }
 
-
 Output Greedy_bestFirst_search(State *initialState){
-    unsigned long long generatedNodes = 0;
-    unsigned long long heuristicSum = 0;
+    unsigned long long parent = 0;
     Output output;
     output.heuristicInitialState = initialState->heuristicValue;
     time_t startTime = clock();
     std::priority_queue<Node, std::vector<Node>, GreedyBFSComparator> open;
     if(initialState->heuristicValue < INT_MAX){
         open.push(Node(initialState, 0));
-        heuristicSum = heuristicSum + initialState->heuristicValue;
-        generatedNodes++;
+        output.heuristicSum = output.heuristicSum + initialState->heuristicValue;
+        output.generatedNodes++;
     }
     std::set<unsigned long long> closed;
     while(!open.empty()){
@@ -238,64 +171,73 @@ Output Greedy_bestFirst_search(State *initialState){
         open.pop();
         if(closed.find(n.state->value) == closed.end()){//https://stackoverflow.com/questions/3136520/determine-if-map-contains-a-value-for-a-key
             closed.insert(n.state->value);
-            //printf("Heuristic: %d | Cost: %d\n", n.state->heuristicValue, n.cost);
             if(n.state->isGoal()){
                 output.time = clock() - startTime;
-                output.averageHeuristicValue = heuristicSum/generatedNodes;
+                output.averageHeuristicValue = (float)output.heuristicSum/output.generatedNodes;
                 output.optimalSolutionSize = n.cost;
                 return output;
             }
             output.expandedNodes++;
-            for(State* s: n.state->generate_successors()){
+            for(State* s: n.state->generate_successors(parent)){
                 if(s->heuristicValue < INT_MAX){
-                    heuristicSum = heuristicSum + s->heuristicValue;
+                    output.heuristicSum = output.heuristicSum + s->heuristicValue;
                     Node n1 = Node(s, n.cost + 1);
-                    generatedNodes++;
+                    output.generatedNodes++;
                     open.push(n1);
                 }
             }
+            parent = n.state->value;
         }
     }
     output.time = clock() - startTime;
-    output.averageHeuristicValue = heuristicSum/generatedNodes;
+    output.averageHeuristicValue = output.heuristicSum/output.generatedNodes;
     output.optimalSolutionSize = -1; //choosen representation for unsolvable
     return output;
 }
+
+
 
 Output IDAstar(State *initialState){
     Output output;
     time_t startTime = clock();
     output.heuristicInitialState = -1;
     Node n0 = Node(initialState, 0);
+    output.heuristicSum = output.heuristicSum + n0.state->heuristicValue;
+    output.generatedNodes++;
     output.heuristicInitialState = n0.state->heuristicValue;
     int f_limit = n0.state->heuristicValue;
     while(f_limit < INT_MAX){
-        std::pair <int, Output> idaPair = ida_recursive_search(n0,f_limit, output, 0);
+        std::pair <int, Output> idaPair = ida_recursive_search(n0,f_limit, &output, 0);
         f_limit = idaPair.first;
         if(idaPair.second.optimalSolutionSize != -1){
             idaPair.second.time = clock() - startTime;
+            idaPair.second.averageHeuristicValue = (float)idaPair.second.heuristicSum/idaPair.second.generatedNodes;
             return idaPair.second;
         }
     }
     output.time = clock() - startTime;
+    output.optimalSolutionSize = -1;
     return output;
 }
 
-std::pair <int, Output> ida_recursive_search(Node n, int f_limit, Output output, unsigned long long parent){
+std::pair <int, Output> ida_recursive_search(Node n, int f_limit, Output *output, unsigned long long parent){
+    //printf("Output: %lld - %lld\n", output->heuristicSum, output->generatedNodes);
     int fn = n.cost + n.state->heuristicValue;
     if(fn > f_limit){
-        output.optimalSolutionSize = -1;
-        return std::make_pair(fn, output);
+        output->optimalSolutionSize = -1;
+        return std::make_pair(fn, *output);
     }
     if(n.state->isGoal()){
-        output.optimalSolutionSize = n.cost;
-        return std::make_pair(-1, output);
+        output->optimalSolutionSize = n.cost;
+        return std::make_pair(-1, *output);
     }
     int next_limit = INT_MAX;
-    output.expandedNodes++;
+    output->expandedNodes++;
     for(State* s: n.state->generate_successors(parent)){
         if(s->heuristicValue < INT_MAX){
             Node n1 = Node(s, n.cost + 1);
+            output->heuristicSum = output->heuristicSum + n1.state->heuristicValue;
+            output->generatedNodes++;
             std::pair <int, Output> idaPair = ida_recursive_search(n1,f_limit, output, n.state->value);
             if(idaPair.second.optimalSolutionSize != -1){
                 return std::make_pair(-1, idaPair.second);
@@ -304,6 +246,6 @@ std::pair <int, Output> ida_recursive_search(Node n, int f_limit, Output output,
         }
 
     }
-    output.optimalSolutionSize = -1;
-    return std::make_pair(next_limit, output);
+    output->optimalSolutionSize = -1;
+    return std::make_pair(next_limit, *output);
 }
