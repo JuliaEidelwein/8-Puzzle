@@ -56,7 +56,6 @@ Output IterativeDeepening_DFS(State *initialState){
 }
 
 
-//TO-DO: improve algorithm, it gets extremely slow after depth 14
 Output depth_limited_search(State *state, int depth_limit, unsigned long long parent, Output *output){
     //std::cout << "Profundidade " << depth_limit << std::endl;
     if(state->isGoal()){
@@ -103,7 +102,7 @@ bool AstarComparator::operator() (Node n1, Node n2){
 //Manhattan distance is admissible and consistent,
 //so we implemented A* without reopening
 Output Astar(State *initialState){
-    unsigned long long parent = 0;
+    //unsigned long long parent = 0;
     Output output;
     output.heuristicInitialState = initialState->heuristicValue;
     time_t startTime = clock();
@@ -135,7 +134,7 @@ Output Astar(State *initialState){
                     open.push(n1);
                 }
             }
-            parent = n.state->value;
+            //parent = n.state->value;
         }
     }
     output.time = clock() - startTime;
@@ -144,18 +143,21 @@ Output Astar(State *initialState){
     return output;
 }
 
+//Priority: hValue > LIFO
 bool GreedyBFSComparator::operator() (Node n1, Node n2){
     int n1Value = n1.state->heuristicValue;
     int n2Value = n2.state->heuristicValue;
+    //Uses heuristic value
     if(n1Value > n2Value)
         return true;
     else if(n1Value < n2Value)
         return false;
+    //If they are equal, uses LIFO
     return n1.id < n2.id;
 }
 
 Output Greedy_bestFirst_search(State *initialState){
-    unsigned long long parent = 0;
+    //unsigned long long parent = 0;
     Output output;
     output.heuristicInitialState = initialState->heuristicValue;
     time_t startTime = clock();
@@ -178,7 +180,7 @@ Output Greedy_bestFirst_search(State *initialState){
                 return output;
             }
             output.expandedNodes++;
-            for(State* s: n.state->generate_successors(parent)){
+            for(State* s: n.state->generate_successors()){
                 if(s->heuristicValue < INT_MAX){
                     output.heuristicSum = output.heuristicSum + s->heuristicValue;
                     Node n1 = Node(s, n.cost + 1);
@@ -186,7 +188,7 @@ Output Greedy_bestFirst_search(State *initialState){
                     open.push(n1);
                 }
             }
-            parent = n.state->value;
+            //parent = n.state->value;
         }
     }
     output.time = clock() - startTime;
@@ -221,7 +223,6 @@ Output IDAstar(State *initialState){
 }
 
 std::pair <int, Output> ida_recursive_search(Node n, int f_limit, Output *output, unsigned long long parent){
-    //printf("Output: %lld - %lld\n", output->heuristicSum, output->generatedNodes);
     int fn = n.cost + n.state->heuristicValue;
     if(fn > f_limit){
         output->optimalSolutionSize = -1;

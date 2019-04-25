@@ -2,12 +2,12 @@
 
 /* The puzzle is represented with a unsigned long long, using four bits per tile
                         [0][1][2]
-0 1 2 3 4 5 6 7 8  -->  [3][4][5] --> 0001 0010 0011 0100 0101 0110 0111 1000 0000
+0 1 2 3 4 5 6 7 8  -->  [3][4][5] --> 0000 0001 0010 0011 0100 0101 0110 0111 1000
                         [6][7][8]
 
                                              [ 0][ 1][ 2][ 3]
-0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15   -->  [ 4][ 5][ 6][ 7]  --> 0001 0010 0011 0100 0101 0110 0111 1000...
-                                             [ 8][ 9][10][11]        ...1001 1010 1011 1100 1101 1110 1111 0000
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15   -->  [ 4][ 5][ 6][ 7]  -->      0000 0001 0010 0011 0100 0101 0110 0111...
+                                             [ 8][ 9][10][11]        ...1000 1001 1010 1011 1100 1101 1110 1111
                                              [12][13][14][15]
 
 We mark each position in the following order:
@@ -56,7 +56,6 @@ std::vector<State*> State::generate_successors(){
     unsigned long long temp, maskOnes, newState = 0xf;
     int switchPosition;
     std::vector<State*> successors;
-    //printf("STATE: %llx ", this->value);
     if(globalPuzzleSize == 9){ //8 puzzle
         //UP
         if(this->zeroPosition < 6){ //not in position 8, 7 or 6
@@ -117,7 +116,6 @@ std::vector<State*> State::generate_successors(){
             newState = temp | newState;
             State* upState = new State(newState, switchPosition);
             successors.push_back(upState);
-            //printf("| UP: %llx ", upState->value);
             newState = 0xf;
         }
         //LEFT
@@ -130,7 +128,6 @@ std::vector<State*> State::generate_successors(){
             newState = temp | newState;
             State* leftState = new State(newState, switchPosition);
             successors.push_back(leftState);
-            //printf("| LEFT: %llx ", leftState->value);
             newState = 0xf;
         }
         //RIGHT
@@ -143,7 +140,6 @@ std::vector<State*> State::generate_successors(){
             newState = temp | newState;
             State* rightState = new State(newState, switchPosition);
             successors.push_back(rightState);
-            //printf("| RIGHT: %llx ", rightState->value);
             newState = 0xf;
         }
         //DOWN
@@ -156,12 +152,9 @@ std::vector<State*> State::generate_successors(){
             newState = temp | newState;
             State* downState = new State(newState, switchPosition);
             successors.push_back(downState);
-            //printf("| DOWN: %llx ", downState->value);
             newState = 0xf;
         }
     }
-    //printf("\n");
-    //std::cin.ignore();
     return successors;
 }
 
@@ -169,7 +162,6 @@ std::vector<State*> State::generate_successors(unsigned long long parent){
     unsigned long long temp, maskOnes, newState = 0xf;
     int switchPosition;
     std::vector<State*> successors;
-    //printf("STATE: %llx ", this->value);
     if(globalPuzzleSize == 9){ //8 puzzle
         //UP
         if(this->zeroPosition < 6){ //not in position 8, 7 or 6
@@ -180,7 +172,6 @@ std::vector<State*> State::generate_successors(unsigned long long parent){
             newState = newState >> 12;
             newState = temp | newState;
             if(newState != parent){
-                //printf("%llx not equal to %llx\n", newState, parent);
                 State* upState = new State(newState, switchPosition);
                 successors.push_back(upState);
             }
@@ -195,7 +186,6 @@ std::vector<State*> State::generate_successors(unsigned long long parent){
             newState = newState >> 4;
             newState = temp | newState;
             if(newState != parent){
-                //printf("%llx not equal to %llx\n", newState, parent);
                 State* leftState = new State(newState, switchPosition);
                 successors.push_back(leftState);
             }
@@ -210,7 +200,6 @@ std::vector<State*> State::generate_successors(unsigned long long parent){
             newState = newState << 4;
             newState = temp | newState;
             if(newState != parent){
-                //printf("%llx not equal to %llx\n", newState, parent);
                 State* rightState = new State(newState, switchPosition);
                 successors.push_back(rightState);
             }
@@ -225,7 +214,6 @@ std::vector<State*> State::generate_successors(unsigned long long parent){
             newState = newState << 12;
             newState = temp | newState;
             if(newState != parent){
-                //printf("%llx not equal to %llx\n", newState, parent);
                 State* downState = new State(newState, switchPosition);
                 successors.push_back(downState);
             }
@@ -244,7 +232,6 @@ std::vector<State*> State::generate_successors(unsigned long long parent){
                 State* upState = new State(newState, switchPosition);
                 successors.push_back(upState);
             }
-            //printf("| UP: %llx ", upState->value);
             newState = 0xf;
         }
         //LEFT
@@ -259,7 +246,6 @@ std::vector<State*> State::generate_successors(unsigned long long parent){
                 State* leftState = new State(newState, switchPosition);
                 successors.push_back(leftState);
             }
-            //printf("| LEFT: %llx ", leftState->value);
             newState = 0xf;
         }
         //RIGHT
@@ -274,7 +260,6 @@ std::vector<State*> State::generate_successors(unsigned long long parent){
                 State* rightState = new State(newState, switchPosition);
                 successors.push_back(rightState);
             }
-            //printf("| RIGHT: %llx ", rightState->value);
             newState = 0xf;
         }
         //DOWN
@@ -289,12 +274,9 @@ std::vector<State*> State::generate_successors(unsigned long long parent){
                 State* downState = new State(newState, switchPosition);
                 successors.push_back(downState);
             }
-            //printf("| DOWN: %llx ", downState->value);
             newState = 0xf;
         }
     }
-    //printf("\n");
-    //std::cin.ignore();
     return successors;
 }
 
@@ -309,13 +291,8 @@ int State::heuristicFunction(){
             int goalPosition = getGoalTilePosition(currentTile);
             manhattanDist = manhattanDist + std::abs(getRow(i) - getRow(goalPosition));
             manhattanDist = manhattanDist + std::abs(getColumn(i) - getColumn(goalPosition));
-            //std::cout << "Tile at " << i << " has Row " << getRow(i) << " and Column " <<  getColumn(i) << std::endl;
-            //std::cout << "Goal tile at " << goalPosition << " has Row " << getRow(goalPosition)<< " and Column " <<  getColumn(goalPosition) << std::endl;
-            //std::cout << "Distance: " << std::abs(getRow(i) - getRow(goalPosition)) << " + " << std::abs(getColumn(i) - getColumn(goalPosition)) << std::endl;
-            //std::cin.ignore();
         }
     }
-    //std::cout << "Total: " << manhattanDist << std::endl;
     return manhattanDist;
 }
 
@@ -323,121 +300,13 @@ int State::heuristicFunction(){
 int getGoalTilePosition(unsigned long long tile){
     int j = 0;
     unsigned long long mask = 0xf;
-    //printf("Tile came as %llx\n", tile);
-    //std::cout << tile << std::endl;
     if(globalPuzzleSize == 9){
-        /*switch(tile){
-        case 0:
-            return 8;
-            printf("tile 0 fica na posicao 8\n");
-            break;
-        case 1:
-            return 7;
-            printf("tile 1 fica na posicao 7\n");
-            break;
-        case 2:
-            return 6;
-            printf("tile 2 fica na posicao 6\n");
-            break;
-        case 3:
-            return 5;
-            printf("tile 3 fica na posicao 5\n");
-            break;
-        case 4:
-            return 4;
-            printf("tile 4 fica na posicao 4\n");
-            break;
-        case 5:
-            return 3;
-            printf("tile 5 fica na posicao 3\n");
-            break;
-        case 6:
-            return 2;
-            printf("tile 6 fica na posicao 2\n");
-            break;
-        case 7:
-            return 1;
-            printf("tile 7 fica na posicao 1\n");
-            break;
-        case 8:
-            return 0;
-            printf("tile 8 fica na posicao 0\n");
-            break;
-        default:
-            printf("Deu ruim aqui no 8\n");
-        }*/
         while((GOAL8 & mask) != tile){
             j++;
             tile = tile << 4;
             mask = mask << 4;
         }
     } else {
-        /*switch(tile){
-        case 0:
-            return 15;
-            printf("tile 0 fica na posicao 15\n");
-            break;
-        case 1:
-            return 14;
-            printf("tile 1 fica na posicao 14\n");
-            break;
-        case 2:
-            return 13;
-            printf("tile 2 fica na posicao 13\n");
-            break;
-        case 3:
-            return 12;
-            printf("tile 3 fica na posicao 12\n");
-            break;
-        case 4:
-            return 11;
-            printf("tile 4 fica na posicao 11\n");
-            break;
-        case 5:
-            return 10;
-            printf("tile 5 fica na posicao 10\n");
-            break;
-        case 6:
-            return 9;
-            printf("tile 6 fica na posicao 9\n");
-            break;
-        case 7:
-            return 8;
-            printf("tile 7 fica na posicao 8\n");
-            break;
-        case 8:
-            return 7;
-            printf("tile 8 fica na posicao 7\n");
-            break;
-        case 9:
-            return 6;
-            printf("tile 9 fica na posicao 6\n");
-            break;
-        case 10:
-            return 5;
-            printf("tile 10 fica na posicao 5\n");
-            break;
-        case 11:
-            return 4;
-            printf("tile 11 fica na posicao 4\n");
-            break;
-        case 12:
-            return 3;
-            printf("tile 12 fica na posicao 3\n");
-            break;
-        case 13:
-            return 2;
-            printf("tile 13 fica na posicao 2\n");
-            break;
-        case 14:
-            return 1;
-            printf("tile 14 fica na posicao 1\n");
-            break;
-        case 15:
-            return 0;
-            printf("tile 15 fica na posicao 0\n");
-        }*/
-
         while((GOAL15 & mask) != tile){
             j++;
             tile = tile << 4;

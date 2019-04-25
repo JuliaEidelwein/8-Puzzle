@@ -12,14 +12,14 @@ As we had to optimize our representation to use as least bits as possible (due t
 Because C++ does not have a type with only 4 bits (_int_ has 8 bits), we used a single _unsigned long long_ (64 bits wide) instead of a vector, using 4 bits for each of the 16 tiles (4x16 = 64 bits).
 
 <pre>
-[1][2][3]  
-[4][5][6]  --> 1 2 3 4 5 6 7 8 0 --> 0001 0010 0011 0100 0101 0110 0111 1000 0000  
-[7][8][0]  
+[0][1][2]  
+[3][4][5]  --> 0 1 2 3 4 5 6 7 8 --> 0000 0001 0010 0011 0100 0101 0110 0111 1000  
+[6][7][8]  
 
-[ 1][ 2][ 3][ 4]  
-[ 5][ 6][ 7][ 8] --> 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 0--> 0001 0010 0011 0100 0101 0110 0111 1000...  
-[ 9][10][11][12]                                           ...1001 1010 1011 1100 1101 1110 1111 0000    
-[13][14][15][ 0]  
+[ 0][ 1][ 2][ 3]  
+[ 4][ 5][ 6][ 7] --> 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 --> 0000 0001 0010 0011 0100 0101 0110 0111...  
+[ 8][ 9][10][11]                                           ...1000 1001 1010 1011 1100 1101 1110 1111     
+[12][13][14][15]  
 </pre>
 Since we chose such a kind of representation, bitwise operations became needed to generate neighbor states and calculate the heuristic value of each state.   
 We mark each position in the following order:

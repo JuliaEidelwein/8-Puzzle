@@ -18,7 +18,6 @@ int main(int argc, char* argv[]){
             puzzleSize = argc - 2;
         }
         numOfInstances = (argc - 2)/puzzleSize;
-        //printf("argc: %d, puzzleSize: %d, numOfInstances: %d\n", argc, puzzleSize, numOfInstances);
     } else {
         printf("Incorrect number of arguments!\n");
         printf("Use: ./main -<algType> <instance>\n");
@@ -31,7 +30,6 @@ int main(int argc, char* argv[]){
         for(int i = 0; i < numOfInstances; i++){
             state = fill_initial_state(initialState, argv, puzzleSize, i);
             state.successors = state.generate_successors();
-            //printf("Instance %d: %llx\n", numOfInstances, state.value);
             std::cout << BFS_Graph(&state) << std::endl;
         }
     } else if(strcmp(algorithmType,"-idfs") == 0) {
@@ -61,9 +59,6 @@ int main(int argc, char* argv[]){
     } else {
         std::cout << "Invalid algorithm!" << std::endl;
     }
-
-    //state.successors = state.generate_successors();
-    //std::cout << BFS_Graph(state) << std::endl;
 
     return 0;
 }
